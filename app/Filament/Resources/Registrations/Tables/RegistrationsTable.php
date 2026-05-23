@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Registrations\Tables;
 
-use App\Models\Registration;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
@@ -37,6 +37,26 @@ class RegistrationsTable
                     ->label('Email')
                     ->sortable()
                     ->searchable(),
+
+                ImageColumn::make('user.foto')
+                    ->label('Bukti Bayar')
+                    ->getStateUsing(function ($record) {
+                        $foto = $record->user?->foto;
+
+                        if (!$foto) {
+                            return null;
+                        }
+
+                        $path = ltrim($foto, '/');
+
+                        if (str_starts_with($path, 'public/')) {
+                            $path = substr($path, 7);
+                        }
+
+                        return asset('storage/' . $path);
+                    })
+                    ->height(44)
+                    ->square(),
 
                 TextColumn::make('amount')
                     ->label('Amount')

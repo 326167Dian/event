@@ -5,8 +5,8 @@
         <div class="col-lg-8 mx-auto">
             <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 @if ($event->banner)
-                    <img src="{{ asset('storage/' . $event->banner) }}" alt="{{ $event->title }}" class="card-img-top"
-                        style="max-height: 350px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $event->banner) }}" alt="{{ $event->title }}"
+                        class="card-img-top event-banner-image">
                 @endif
 
                 <div class="card-body p-4">
@@ -105,11 +105,6 @@
                                         <!--<h6 class="fw-bold text-success mb-2">💳 Pilihan Pembayaran:</h6>-->
                                         <!--<p class="text-muted mb-2">Silakan pilih metode pembayaran:</p>-->
 
-                                        <!-- Tombol Midtrans -->
-                                        <!--<button id="pay-button" class="btn btn-success w-100 mb-2">-->
-                                        <!--    💳 Bayar Otomatis via Midtrans-->
-                                        <!--</button>-->
-
                                         <!-- Atau manual transfer -->
                                         <div class="border-top pt-3">
                                             <p class="fw-bold text-secondary mb-1">💸 Silahkan Transfer :</p>
@@ -141,11 +136,11 @@
                         @if (!$isFull)
                             <!-- Jika belum login -->
                             <div class="alert alert-info text-center">
-                                🔒 Silakan login terlebih dahulu untuk mendaftar event ini.
+                                🔒 Silakan daftar akun dan upload bukti pembayaran untuk mendaftar event ini.
                             </div>
-                            <button class="btn btn-success w-100 btn-lg" onclick="window.location.href='{{ route('login') }}'">
-                                Login untuk Daftar
-                            </button>
+                            <a href="{{ route('register') }}" class="btn btn-success w-100 btn-lg">
+                                🎟️ Registrasi dan Upload Bukti Pembayaran
+                            </a>
                         @endif
                     @endauth
 
@@ -157,29 +152,6 @@
             </div>
         </div>
     </div>
-    <script>
-        const payButton = document.getElementById('pay-button');
-        if (payButton) {
-            payButton.addEventListener('click', function() {
-                window.snap.pay('{{ $snapToken }}', {
-                    onSuccess: function(result) {
-                        alert("Pembayaran berhasil!");
-                        window.location.href = "{{ route('events.show', $event->id) }}";
-                    },
-                    onPending: function(result) {
-                        alert("Menunggu pembayaran...");
-                    },
-                    onError: function(result) {
-                        alert("Pembayaran gagal!");
-                    },
-                    onClose: function() {
-                        alert('Kamu menutup popup tanpa menyelesaikan pembayaran');
-                    }
-                });
-            });
-        }
-    </script>
-
     <style>
         .card {
             transition: all 0.3s ease;
@@ -188,6 +160,13 @@
         .card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-banner-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            background-color: #f8f9fa;
         }
     </style>
 @endsection

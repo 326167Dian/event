@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -21,12 +22,16 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'no_tlp' => 'required|string|max:20',
             'password' => 'required|min:6|confirmed',
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $fotoPath = $request->file('foto')->store('bukti_pembayaran', 'public');
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'no_tlp' => '+62' . ltrim($request->no_tlp, '0'),
+            'foto' => $fotoPath,
             'password' => Hash::make($request->password),
         ]);
 

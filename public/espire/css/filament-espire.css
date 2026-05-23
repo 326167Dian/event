@@ -1,0 +1,198 @@
+:root {
+    --espire-bg: #f3f7f9;
+    --espire-card: #ffffff;
+    --espire-border: #e4eef5;
+    --espire-text: #2f3f4c;
+    --espire-muted: #6e8aa1;
+    --espire-sidebar: #f8fbfd;
+    --espire-primary: #11a1fd;
+    --espire-success: #00c569;
+    --espire-warning: #ffc833;
+    --espire-danger: #f46363;
+}
+
+html,
+body,
+.fi-body {
+    background: var(--espire-bg) !important;
+    color: var(--espire-text);
+}
+
+.fi-layout {
+    background: var(--espire-bg) !important;
+}
+
+.fi-sidebar.fi-main-sidebar {
+    background: var(--espire-sidebar) !important;
+    border-right: 1px solid var(--espire-border);
+    box-shadow: none !important;
+}
+
+.fi-sidebar-header,
+.fi-topbar {
+    background: var(--espire-card) !important;
+    border-color: var(--espire-border) !important;
+}
+
+.fi-topbar {
+    box-shadow: 0 1px 0 var(--espire-border);
+}
+
+.fi-sidebar-item,
+.fi-topbar-item-btn,
+.fi-dropdown-trigger {
+    border-radius: 10px !important;
+}
+
+.fi-sidebar-item-label,
+.fi-topbar-item-label,
+.fi-page-header-heading,
+.fi-section-header-heading,
+.fi-ta-header-heading {
+    color: var(--espire-text) !important;
+}
+
+.fi-sidebar-item-icon,
+.fi-topbar-item-icon,
+.fi-page-header-description,
+.fi-section-header-description,
+.fi-ta-header-description,
+.fi-badge {
+    color: var(--espire-muted);
+}
+
+.fi-sidebar-item-active,
+.fi-sidebar-item-button:hover,
+.fi-sidebar-item-button:focus {
+    background: rgba(17, 161, 253, 0.12) !important;
+}
+
+.fi-main {
+    background: var(--espire-bg) !important;
+}
+
+.fi-section,
+.fi-ta-ctn,
+.fi-in-entry,
+.fi-fo-field-wrp,
+.fi-modal-window {
+    background: var(--espire-card) !important;
+    border: 1px solid var(--espire-border) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 18px rgba(28, 50, 66, 0.06) !important;
+}
+
+.fi-tabs,
+.fi-dropdown-panel,
+.fi-modal-window {
+    border-color: var(--espire-border) !important;
+}
+
+.fi-input,
+.fi-select-input,
+.fi-textarea,
+.fi-checkbox-input,
+.fi-radio-input {
+    border-color: #ccdfea !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.fi-input:focus,
+.fi-select-input:focus,
+.fi-textarea:focus {
+    border-color: var(--espire-primary) !important;
+    box-shadow: 0 0 0 3px rgba(17, 161, 253, 0.16) !important;
+}
+
+.fi-btn {
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.fi-btn-color-primary {
+    background: var(--espire-primary) !important;
+    border-color: var(--espire-primary) !important;
+}
+
+.fi-ta-table {
+    border-color: var(--espire-border) !important;
+}
+
+.fi-ta-header-cell,
+.fi-ta-cell,
+.fi-ta-record,
+.fi-ta-group-header {
+    border-color: var(--espire-border) !important;
+}
+
+.fi-ta-header-cell {
+    background: #f8fbfd;
+}
+
+.fi-ta-record:hover,
+.fi-ta-row:hover {
+    background: #f9fcff !important;
+}
+
+.fi-badge-color-success,
+.fi-color-success {
+    --c-400: var(--espire-success);
+}
+
+.fi-badge-color-warning,
+.fi-color-warning {
+    --c-400: var(--espire-warning);
+}
+
+.fi-badge-color-danger,
+.fi-color-danger {
+    --c-400: var(--espire-danger);
+}
+
+@media (max-width: 1024px) {
+    .fi-sidebar.fi-main-sidebar {
+        background: var(--espire-card) !important;
+    }
+}
+
+.espire-sidebar-handle-ctn {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 60;
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .espire-sidebar-handle-ctn {
+        display: block;
+    }
+
+    .espire-sidebar-handle-open {
+        left: var(--sidebar-width);
+    }
+}
+
+.espire-sidebar-handle {
+    width: 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--espire-border);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    background: #fff;
+    color: #5f6368;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 3px 0 8px rgba(28, 50, 66, 0.12);
+}
+
+.espire-sidebar-handle:hover {
+    background: #f1f3f4;
+    color: var(--espire-primary);
+}

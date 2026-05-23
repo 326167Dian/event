@@ -8,7 +8,7 @@
                     <img src="{{ asset('images/logo.png') }}" alt="" width="70" height="70" class="d-block mx-auto mb-3">
                     <h3 class="text-center mb-4 fw-bold text-primary">Daftar Akun Baru</h3>
 
-                    <form action="{{ route('register') }}" method="POST">
+                    <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
@@ -51,8 +51,21 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
-                            Daftar Sekarang
+                        <div class="mb-3">
+                            <label for="foto" class="form-label fw-semibold">📸 Bukti Pembayaran</label>
+                            <input type="file" name="foto" id="foto" class="form-control form-control-lg"
+                                accept="image/*" required>
+                            <div class="form-text text-muted">Upload foto bukti transfer (JPG/PNG, maks 2MB)</div>
+                            @error('foto')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                            <div id="foto-preview" class="mt-2 d-none">
+                                <img id="preview-img" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                            🎟️ Daftar &amp; Kirim Bukti Pembayaran
                         </button>
                     </form>
 
@@ -80,5 +93,17 @@
                 btn.textContent = "👁";
             }
         }
+
+        document.getElementById('foto').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    document.getElementById('preview-img').src = ev.target.result;
+                    document.getElementById('foto-preview').classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 @endsection
