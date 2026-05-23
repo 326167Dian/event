@@ -38,10 +38,10 @@ class RegistrationsTable
                     ->sortable()
                     ->searchable(),
 
-                ImageColumn::make('user.foto')
+                ImageColumn::make('foto')
                     ->label('Bukti Bayar')
                     ->getStateUsing(function ($record) {
-                        $foto = $record->user?->foto;
+                        $foto = $record->foto ?: $record->user?->foto;
 
                         if (!$foto) {
                             return null;

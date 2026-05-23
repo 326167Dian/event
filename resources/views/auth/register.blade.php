@@ -10,6 +10,8 @@
 
                     <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="event_id" value="{{ request('event_id') }}">
+
                         <div class="mb-3">
                             <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
                             <input type="text" name="name" id="name" class="form-control form-control-lg"

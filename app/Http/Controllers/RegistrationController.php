@@ -22,6 +22,7 @@ class RegistrationController extends Controller
                 'fullname' => $user->name,
                 'phone' => $user->no_tlp,
                 'email' => $user->email,
+                'foto' => $user->foto,
             ]
         );
 

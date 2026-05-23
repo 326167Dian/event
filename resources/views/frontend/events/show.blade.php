@@ -138,7 +138,7 @@
                             <div class="alert alert-info text-center">
                                 🔒 Silakan daftar akun dan upload bukti pembayaran untuk mendaftar event ini.
                             </div>
-                            <a href="{{ route('register') }}" class="btn btn-success w-100 btn-lg">
+                            <a href="{{ route('register', ['event_id' => $event->id]) }}" class="btn btn-success w-100 btn-lg">
                                 🎟️ Registrasi dan Upload Bukti Pembayaran
                             </a>
                         @endif

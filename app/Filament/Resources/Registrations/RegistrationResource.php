@@ -61,8 +61,11 @@ class RegistrationResource extends Resource
 
                 Section::make('Bukti Pembayaran')
                     ->schema([
-                        ImageEntry::make('user.foto')
+                        ImageEntry::make('foto')
                             ->label('Foto Bukti Transfer')
+                            ->getStateUsing(function ($record) {
+                                return $record->foto ?: $record->user?->foto;
+                            })
                             ->disk('public')
                             ->height(350)
                             ->extraImgAttributes([
