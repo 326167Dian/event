@@ -31,14 +31,14 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold">Email</label>
                                 <input type="email" name="email" id="email" class="form-control form-control-lg"
-                                    placeholder="Masukkan email anda" required>
+                                    placeholder="Masukkan email saat registrasi" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="password" class="form-label fw-semibold">Password</label>
                                 <div class="input-group">
                                     <input type="password" name="password" id="password"
-                                        class="form-control form-control-lg" placeholder="Masukkan password" required>
+                                        class="form-control form-control-lg" placeholder="Masukkan password saat registrasi" required>
                                     <button type="button" class="btn btn-outline-primary" id="togglePassword">
                                         👁️
                                     </button>

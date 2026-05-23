@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Events\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -17,10 +16,12 @@ class EventForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
                 RichEditor::make('description')
                     ->label('Deskripsi')
-                    ->toolbarButtons(['bold', 'italic', 'underline', 'strike', 'link', 'bulletList', 'orderedList', 'blockquote', 'codeBlock', 'redo', 'undo']),
+                    ->toolbarButtons(['bold', 'italic', 'underline', 'strike', 'link', 'bulletList', 'orderedList', 'blockquote', 'codeBlock', 'redo', 'undo'])
+                    ->columnSpanFull(),
                 DateTimePicker::make('start_at'),
                 DateTimePicker::make('end_at'),
                 TextInput::make('location'),

@@ -96,11 +96,11 @@
                                 @endif
                             @else
                                 <div class="alert alert-warning">
-                                    ⚠️ Kamu sudah terdaftar, tetapi belum menyelesaikan pembayaran.
+                                    ⚠️ Kamu sudah terdaftar, silahkan menunggu konfirmasi pembayaran dari admin.
                                 </div>
 
                                 <!-- Pilihan Pembayaran -->
-                                <div class="card bg-light border-0 mb-3">
+                                {{-- <div class="card bg-light border-0 mb-3">
                                     <div class="card-body">
                                         <!--<h6 class="fw-bold text-success mb-2">💳 Pilihan Pembayaran:</h6>-->
                                         <!--<p class="text-muted mb-2">Silakan pilih metode pembayaran:</p>-->
@@ -115,7 +115,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <a href="https://wa.me/{{ $event->whatsapp_admin }}" target="_blank"
                                     class="btn btn-outline-success w-100">
