@@ -143,12 +143,33 @@
                                     <div class="alert alert-info small">
                                         📎 Silakan upload bukti transfer untuk mendaftar event berbayar ini.
                                     </div>
+                                    @error('name')
+                                        <div class="alert alert-danger small">{{ $message }}</div>
+                                    @enderror
+                                    @error('no_tlp')
+                                        <div class="alert alert-danger small">{{ $message }}</div>
+                                    @enderror
                                     @error('foto')
                                         <div class="alert alert-danger small">{{ $message }}</div>
                                     @enderror
                                     <form action="{{ route('events.register', $event->id) }}" method="POST"
                                         enctype="multipart/form-data" class="mt-3">
                                         @csrf
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
+                                            <input type="text" name="name" id="name" class="form-control"
+                                                value="{{ old('name', auth()->user()->name) }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="no_tlp" class="form-label fw-semibold">No. Telepon</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light">+62</span>
+                                                <input type="text" name="no_tlp" id="no_tlp" class="form-control"
+                                                    placeholder="8123..."
+                                                    value="{{ old('no_tlp', auth()->user()->no_tlp ? ltrim(str_replace('+62', '', auth()->user()->no_tlp), '0') : '') }}"
+                                                    required>
+                                            </div>
+                                        </div>
                                         <div class="mb-3">
                                             <label for="foto" class="form-label fw-semibold">Bukti Transfer</label>
                                             <input type="file" name="foto" id="foto" class="form-control"

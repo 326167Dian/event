@@ -13,14 +13,25 @@ class RegistrationController extends Controller
         $isPaidEvent = $event->price > 0;
 
         $request->validate([
+            'name' => [$isPaidEvent ? 'required' : 'nullable', 'string', 'max:255'],
+            'no_tlp' => [$isPaidEvent ? 'required' : 'nullable', 'string', 'max:20'],
             'foto' => [$isPaidEvent ? 'required' : 'nullable', 'image', 'max:5120'],
         ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'no_tlp.required' => 'No. telepon wajib diisi.',
             'foto.required' => 'Bukti transfer wajib diupload untuk event berbayar.',
             'foto.image' => 'Bukti transfer harus berupa file gambar.',
             'foto.max' => 'Ukuran bukti transfer maksimal 5 MB.',
         ]);
 
         $user = auth()->user();
+
+        $fullname = $isPaidEvent ? $request->name : $user->name;
+        $phone = $isPaidEvent ? '+62' . ltrim($request->no_tlp, '0') : $user->no_tlp;
+
+        if ($isPaidEvent) {
+            $user->forceFill(['name' => $fullname, 'no_tlp' => $phone])->save();
+        }
 
         $fotoPath = $request->hasFile('foto')
             ? $request->file('foto')->store('bukti-transfer', 'public')
@@ -33,8 +44,8 @@ class RegistrationController extends Controller
             ],
             [
                 'amount' => $event->price,
-                'fullname' => $user->name,
-                'phone' => $user->no_tlp,
+                'fullname' => $fullname,
+                'phone' => $phone,
                 'email' => $user->email,
                 'foto' => $fotoPath,
                 // Event gratis langsung disetujui, event berbayar menunggu verifikasi admin.
