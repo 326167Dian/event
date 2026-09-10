@@ -63,6 +63,31 @@ class RegistrationsTable
                     ->money('idr')
                     ->sortable(),
 
+                TextColumn::make('payment_method')
+                    ->label('Metode')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? strtoupper($state) : 'Manual')
+                    ->color(fn ($state) => $state === 'qris' ? 'info' : 'gray'),
+
+                TextColumn::make('payment_status')
+                    ->label('Status Bayar')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'Lunas',
+                        'pending' => 'Menunggu',
+                        'expire' => 'Kadaluarsa',
+                        'cancel' => 'Dibatalkan',
+                        'deny' => 'Ditolak',
+                        'failure' => 'Gagal',
+                        default => 'Manual/Belum Bayar',
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'settlement', 'capture' => 'success',
+                        'pending' => 'warning',
+                        'expire', 'cancel', 'deny', 'failure' => 'danger',
+                        default => 'gray',
+                    }),
+
                 BadgeColumn::make('status')
                     ->colors([
                         'warning'   => 'waiting_approval',
@@ -82,6 +107,16 @@ class RegistrationsTable
                         'waiting_approval' => 'Waiting Approval',
                         'approved'         => 'Approved',
                         'rejected'         => 'Rejected',
+                    ]),
+                Tables\Filters\SelectFilter::make('payment_status')
+                    ->label('Status Bayar')
+                    ->options([
+                        'pending'    => 'Menunggu',
+                        'settlement' => 'Lunas',
+                        'expire'     => 'Kadaluarsa',
+                        'cancel'     => 'Dibatalkan',
+                        'deny'       => 'Ditolak',
+                        'failure'    => 'Gagal',
                     ]),
                 Tables\Filters\SelectFilter::make('event_id')
                     ->relationship('event', 'title')

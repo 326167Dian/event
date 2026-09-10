@@ -1,77 +1,35 @@
 @extends('layout')
 
 @section('content')
-    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="col-md-6">
-            <div class="card shadow-lg border-0 rounded-4">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="p-4 text-white" style="background: linear-gradient(135deg, #04bef7, #0d6efd);">
+                    <h3 class="fw-bold mb-1">Daftar Akun Baru</h3>
+                    <p class="mb-0 opacity-75">Daftar untuk mengikuti event dan membaca info selengkapnya.</p>
+                </div>
+
                 <div class="card-body p-4">
-                    <img src="{{ asset('images/logo.png') }}" alt="" width="70" height="70" class="d-block mx-auto mb-3">
-                    <h3 class="text-center mb-4 fw-bold text-primary">Daftar Akun Baru</h3>
+                    @if (session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
 
-                    <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="event_id" value="{{ request('event_id') }}">
+                    <div class="alert alert-light border text-center small mb-4">
+                        Daftar akun hanya melalui akun Google.
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
-                            <input type="text" name="name" id="name" class="form-control form-control-lg"
-                                placeholder="Masukkan nama lengkap" required>
-                        </div>
+                    <a href="{{ route('auth.google', ['event_id' => request('event_id')]) }}"
+                        class="btn btn-outline-secondary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                        <svg width="20" height="20" viewBox="0 0 48 48">
+                            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" />
+                            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6 29.5 4 24 4 16 4 9.1 8.5 6.3 14.7z" />
+                            <path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.9 14-5.9l-6.5-5.5c-2 1.5-4.6 2.4-7.5 2.4-5.3 0-9.7-3.4-11.3-8.1l-6.5 5C9 39.5 15.9 44 24 44z" />
+                            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.3 5.6l6.5 5.5C40.9 36.6 44 30.9 44 24c0-1.2-.1-2.3-.4-3.5z" />
+                        </svg>
+                        <span class="fw-semibold">Daftar dengan Google</span>
+                    </a>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label fw-semibold">Email</label>
-                            <input type="email" name="email" id="email" class="form-control form-control-lg"
-                                placeholder="nama@email.com" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="no_tlp" class="form-label fw-semibold">Nomor Telepon</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-light">+62</span>
-                                <input type="text" name="no_tlp" id="no_tlp" class="form-control"
-                                    placeholder="8123..." required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label fw-semibold">Password</label>
-                            <div class="input-group input-group-lg">
-                                <input type="password" name="password" id="password" class="form-control"
-                                    placeholder="" required>
-                                <button type="button" class="btn btn-outline-secondary"
-                                    onclick="togglePassword('password', this)">👁</button>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Password</label>
-                            <div class="input-group input-group-lg">
-                                <input type="password" name="password_confirmation" id="password_confirmation"
-                                    class="form-control" placeholder="" required>
-                                <button type="button" class="btn btn-outline-secondary"
-                                    onclick="togglePassword('password_confirmation', this)">👁</button>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="foto" class="form-label fw-semibold">📸 Bukti Pembayaran</label>
-                            <input type="file" name="foto" id="foto" class="form-control form-control-lg"
-                                accept="image/*" required>
-                            <div class="form-text text-muted">Upload foto bukti transfer (JPG/PNG, maks 2MB)</div>
-                            @error('foto')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                            <div id="foto-preview" class="mt-2 d-none">
-                                <img id="preview-img" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
-                            🎟️ Daftar &amp; Kirim Bukti Pembayaran
-                        </button>
-                    </form>
-
-                    <div class="text-center mt-3">
+                    <div class="text-center mt-4">
                         <small>Sudah punya akun?
                             <a href="{{ route('login') }}" class="text-decoration-none text-primary fw-semibold">
                                 Login di sini
@@ -82,30 +40,4 @@
             </div>
         </div>
     </div>
-
-    {{-- Script show/hide password --}}
-    <script>
-        function togglePassword(id, btn) {
-            const input = document.getElementById(id);
-            if (input.type === "password") {
-                input.type = "text";
-                btn.textContent = "🙈";
-            } else {
-                input.type = "password";
-                btn.textContent = "👁";
-            }
-        }
-
-        document.getElementById('foto').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (ev) {
-                    document.getElementById('preview-img').src = ev.target.result;
-                    document.getElementById('foto-preview').classList.remove('d-none');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
 @endsection

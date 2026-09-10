@@ -176,23 +176,72 @@ body,
 }
 
 .espire-sidebar-handle {
-    width: 24px;
-    height: 52px;
+    width: 30px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--espire-border);
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-    background: #fff;
-    color: #5f6368;
-    font-size: 14px;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background: var(--espire-primary);
+    color: #fff;
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
-    box-shadow: 3px 0 8px rgba(28, 50, 66, 0.12);
+    box-shadow: 3px 0 12px rgba(17, 161, 253, 0.45);
+    transition: width 0.15s ease, background 0.15s ease;
 }
 
 .espire-sidebar-handle:hover {
-    background: #f1f3f4;
-    color: var(--espire-primary);
+    width: 34px;
+    background: #0d8ee0;
+    color: #fff;
+}
+
+/* Compact layout: less wasted space around page content */
+.fi-main {
+    padding-inline: 0.5rem !important;
+}
+
+.fi-page-header-main-ctn {
+    padding-block: 0.5rem !important;
+    gap: 0.5rem !important;
+}
+
+.fi-page-content {
+    gap: 0.5rem !important;
+}
+
+/* Filament's own sidebar-expand button is replaced by .espire-sidebar-handle */
+.fi-layout-sidebar-toggle-btn-ctn {
+    display: none !important;
+}
+
+/* Dashboard widgets */
+.espire-stat-link {
+    display: block;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.espire-stat-link:hover .card,
+.espire-stat-link:focus .card {
+    box-shadow: 0 10px 24px rgba(28, 50, 66, 0.12) !important;
+    transform: translateY(-2px);
+}
+
+.espire-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.espire-chart-ctn {
+    position: relative;
+    height: 260px;
 }

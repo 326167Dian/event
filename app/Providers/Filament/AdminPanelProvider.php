@@ -53,6 +53,12 @@ class AdminPanelProvider extends PanelProvider
                     '<link href="' . asset('espire/css/filament-espire.css') . '" rel="stylesheet" data-navigate-track />'
                 ),
             )
+            ->renderHook(
+                PanelsRenderHook::SCRIPTS_AFTER,
+                fn (): HtmlString => new HtmlString(
+                    '<script src="' . asset('espire/vendors/chartjs/Chart.min.js') . '" data-navigate-track></script>'
+                ),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

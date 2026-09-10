@@ -63,13 +63,15 @@ class RegistrationResource extends Resource
                     ->schema([
                         ImageEntry::make('foto')
                             ->label('Foto Bukti Transfer')
+                            ->helperText('Klik gambar untuk memperbesar.')
                             ->getStateUsing(function ($record) {
                                 return $record->foto ?: $record->user?->foto;
                             })
                             ->disk('public')
                             ->height(350)
                             ->extraImgAttributes([
-                                'style' => 'object-fit: contain; border: 1px solid #e5e7eb; border-radius: 8px;',
+                                'style' => 'object-fit: contain; border: 1px solid #e5e7eb; border-radius: 8px; cursor: zoom-in;',
+                                'onclick' => "window.open(this.src, '_blank')",
                             ]),
                     ]),
             ]);

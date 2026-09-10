@@ -8,6 +8,12 @@ class Registration extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'paid_at' => 'datetime',
+        'expired_at' => 'datetime',
+        'midtrans_response' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
