@@ -5,7 +5,7 @@
         <div class="col-lg-8 mx-auto">
             <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 @if ($event->banner)
-                    <img src="{{ asset('storage/' . $event->banner) }}" alt="{{ $event->title }}"
+                    <img src="{{ asset('storage-public/' . $event->banner) }}" alt="{{ $event->title }}"
                         class="card-img-top event-banner-image">
                 @endif
 

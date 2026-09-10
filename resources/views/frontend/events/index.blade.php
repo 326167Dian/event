@@ -32,7 +32,7 @@
                     <div class="col-md-4 col-sm-6">
                         <div class="card shadow-sm border-0 h-100 event-card rounded-4 overflow-hidden">
                             @if ($event->banner)
-                                <img src="{{ asset('storage/' . $event->banner) }}" class="card-img-top"
+                                <img src="{{ asset('storage-public/' . $event->banner) }}" class="card-img-top"
                                     alt="{{ $event->title }}" style="height: 220px; object-fit: cover;">
                             @else
                                 <div class="bg-light d-flex justify-content-center align-items-center"

@@ -45,7 +45,7 @@ class UsersTable
                             $path = substr($path, 7);
                         }
 
-                        return asset('storage/' . $path);
+                        return asset('storage-public/' . $path);
                     })
                     ->height(50)
                     ->square(),

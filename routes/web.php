@@ -6,7 +6,14 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StorageFileController;
 
+// Pengganti symlink `php artisan storage:link` (tidak tersedia di hosting ini).
+// Nama path sengaja BUKAN "/storage/..." karena bentrok dengan route bawaan
+// Laravel `storage.local` (dari disk "local" yang punya opsi `serve => true`).
+Route::get('/storage-public/{path}', [StorageFileController::class, 'show'])
+    ->where('path', '.*')
+    ->name('storage.public.show');
 
 Route::get('/', [EventController::class, 'index'])->name('home');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');

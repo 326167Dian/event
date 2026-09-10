@@ -53,7 +53,7 @@ class RegistrationsTable
                             $path = substr($path, 7);
                         }
 
-                        return asset('storage/' . $path);
+                        return asset('storage-public/' . $path);
                     })
                     ->height(44)
                     ->square(),

@@ -41,7 +41,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // "storage-public" (bukan "storage") karena hosting tidak bisa
+            // menjalankan `php artisan storage:link`; file dilayani lewat
+            // route App\Http\Controllers\StorageFileController.
+            'url' => env('APP_URL').'/storage-public',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
