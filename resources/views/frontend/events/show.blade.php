@@ -101,6 +101,16 @@
                                         </a>
                                     </p>
                                 @endif
+                            @elseif ($registration->foto)
+                                <div class="alert alert-warning d-flex align-items-center">
+                                    ⏳ <span class="ms-2">Bukti transfer kamu sedang diverifikasi oleh admin. Mohon
+                                        ditunggu ya.</span>
+                                </div>
+
+                                <a href="https://wa.me/{{ $event->whatsapp_admin }}" target="_blank"
+                                    class="btn btn-outline-secondary w-100">
+                                    💬 Tanya Admin via WhatsApp
+                                </a>
                             @else
                                 @if (in_array($registration->payment_status, ['expire', 'cancel', 'deny', 'failure']))
                                     <div class="alert alert-danger">
