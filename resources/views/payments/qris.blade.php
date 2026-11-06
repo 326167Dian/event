@@ -1,5 +1,12 @@
 @extends('layout')
 
+@php
+    // Dihitung di luar @json() di bawah -- Blade meleset mem-parsing
+    // @json(in_array(..., [...], true)) (array literal + argumen boolean
+    // dalam satu panggilan bikin penutup kurungnya salah hitung).
+    $alreadyPaidForPixel = in_array($registration->payment_status, ['settlement', 'capture'], true);
+@endphp
+
 @section('content')
     <div class="col-lg-6 mx-auto">
         <div class="card shadow-lg border-0 rounded-4">
@@ -76,7 +83,7 @@
                 fbq('track', 'Purchase', pixelData, { eventID: pixelEventId });
             }
 
-            if (typeof window.fbq === 'function' && !@json(in_array($registration->payment_status, ['settlement', 'capture'], true))) {
+            if (typeof window.fbq === 'function' && !@json($alreadyPaidForPixel)) {
                 fbq('track', 'InitiateCheckout', pixelData);
             }
 
