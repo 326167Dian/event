@@ -19,12 +19,19 @@
 
                 <div id="payment-pending">
                     @if ($qrImageSrc ?? $registration->qr_url)
-                        <img src="{{ $qrImageSrc ?? $registration->qr_url }}" alt="QRIS" class="img-fluid mb-3"
+                        <img src="{{ $qrImageSrc ?? $registration->qr_url }}" alt="QRIS" id="qris-image" class="img-fluid mb-2"
                             style="max-width: 280px;">
+                        <div class="mb-3">
+                            <a href="{{ $qrImageSrc ?? $registration->qr_url }}" download="qris-{{ $registration->id }}.png"
+                                class="btn btn-outline-success btn-sm">
+                                ⬇️ Download QRIS
+                            </a>
+                        </div>
                     @endif
                     <p class="text-muted small">
                         Scan QR di atas menggunakan aplikasi e-wallet atau m-banking yang mendukung QRIS
-                        (GoPay, OVO, DANA, ShopeePay, mobile banking, dll).
+                        (GoPay, OVO, DANA, ShopeePay, mobile banking, dll). Kalau susah screenshot, bisa
+                        download gambarnya dulu lalu upload ke aplikasi e-wallet/m-banking.
                     </p>
                     @if ($registration->expired_at)
                         <p class="text-warning small" id="expiry-info">
