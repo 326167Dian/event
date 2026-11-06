@@ -11,8 +11,8 @@
                 </p>
 
                 <div id="payment-pending">
-                    @if ($registration->qr_url)
-                        <img src="{{ $registration->qr_url }}" alt="QRIS" class="img-fluid mb-3"
+                    @if ($qrImageSrc ?? $registration->qr_url)
+                        <img src="{{ $qrImageSrc ?? $registration->qr_url }}" alt="QRIS" class="img-fluid mb-3"
                             style="max-width: 280px;">
                     @endif
                     <p class="text-muted small">
@@ -59,6 +59,27 @@
             const successEl = document.getElementById('payment-success');
             const failedEl = document.getElementById('payment-failed');
 
+            const pixelData = {
+                value: @json((float) $registration->amount),
+                currency: 'IDR',
+                content_name: @json($registration->event->title),
+                content_ids: [@json('EVENT-' . $registration->event_id)],
+                content_type: 'product'
+            };
+            const pixelEventId = @json($registration->tracking_event_id);
+            let purchaseTracked = false;
+
+            function trackPurchase() {
+                if (purchaseTracked || typeof window.fbq !== 'function') return;
+                purchaseTracked = true;
+                // eventID sama dengan yang dikirim server (Conversions API) supaya tidak dihitung dobel.
+                fbq('track', 'Purchase', pixelData, { eventID: pixelEventId });
+            }
+
+            if (typeof window.fbq === 'function' && !@json(in_array($registration->payment_status, ['settlement', 'capture'], true))) {
+                fbq('track', 'InitiateCheckout', pixelData);
+            }
+
             function render(status) {
                 pendingEl.classList.add('d-none');
                 successEl.classList.add('d-none');
@@ -66,6 +87,7 @@
 
                 if (status === 'settlement' || status === 'capture') {
                     successEl.classList.remove('d-none');
+                    trackPurchase();
                 } else if (['expire', 'cancel', 'deny', 'failure'].includes(status)) {
                     failedEl.classList.remove('d-none');
                 } else {

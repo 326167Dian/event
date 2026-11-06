@@ -14,6 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
             'midtrans/notification',
+            'webhooks/hub-qris/notification',
+        ]);
+
+        // Cookie Meta Pixel dibuat oleh JavaScript, jadi jangan didekripsi Laravel.
+        $middleware->encryptCookies(except: [
+            '_fbp',
+            '_fbc',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

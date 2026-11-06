@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Registration;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -18,8 +19,9 @@ class MidtransService
 
     public function __construct()
     {
-        Config::$serverKey = (string) config('services.midtrans.server_key');
-        Config::$isProduction = (bool) config('services.midtrans.is_production');
+        // Kunci diambil dari halaman admin › Pengaturan, fallback ke .env
+        Config::$serverKey = Setting::midtransServerKey();
+        Config::$isProduction = Setting::midtransIsProduction();
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
@@ -146,7 +148,7 @@ class MidtransService
             return null;
         }
 
-        $serverKey = (string) config('services.midtrans.server_key');
+        $serverKey = Setting::midtransServerKey();
         $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
 
         if (! hash_equals($expectedSignature, (string) $signatureKey)) {
@@ -170,9 +172,11 @@ class MidtransService
 
         if (in_array($transactionStatus, ['settlement', 'capture'], true)) {
             $registration->status = 'approved';
-            $registration->paid_at = now();
+            $registration->paid_at ??= now();
         }
 
+        // Event Purchase ke Meta (Conversions API) dikirim otomatis oleh model Registration
+        // saat paid_at pertama kali terisi.
         $registration->save();
 
         return $registration;

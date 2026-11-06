@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    @include('partials.meta-pixel')
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -136,6 +138,9 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Event Meta Pixel per halaman (ViewContent, InitiateCheckout, Purchase, dll) --}}
+    @stack('pixel')
 </body>
 
 </html>

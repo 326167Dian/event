@@ -63,6 +63,36 @@ class RegistrationsTable
                     ->money('idr')
                     ->sortable(),
 
+                TextColumn::make('payment_method')
+                    ->label('Metode')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
+                        'qris' => 'QRIS',
+                        'manual' => 'Transfer',
+                        default => '-',
+                    })
+                    ->color(fn (?string $state) => $state === 'qris' ? 'info' : 'gray')
+                    ->placeholder('-'),
+
+                TextColumn::make('payment_status')
+                    ->label('Status QRIS')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
+                        'settlement', 'capture' => 'Lunas',
+                        'pending' => 'Menunggu',
+                        'expire' => 'Kedaluwarsa',
+                        'cancel', 'deny', 'failure' => 'Gagal',
+                        default => $state,
+                    })
+                    ->color(fn (?string $state) => match ($state) {
+                        'settlement', 'capture' => 'success',
+                        'pending' => 'warning',
+                        'expire', 'cancel', 'deny', 'failure' => 'danger',
+                        default => 'gray',
+                    })
+                    ->placeholder('-')
+                    ->toggleable(),
+
                 SelectColumn::make('status')
                     ->label('Status')
                     ->options([
@@ -83,6 +113,12 @@ class RegistrationsTable
                         'waiting_approval' => 'Waiting Approval',
                         'approved'         => 'Approved',
                         'rejected'         => 'Rejected',
+                    ]),
+                Tables\Filters\SelectFilter::make('payment_method')
+                    ->label('Metode')
+                    ->options([
+                        'qris' => 'QRIS',
+                        'manual' => 'Transfer manual',
                     ]),
                 Tables\Filters\SelectFilter::make('event_id')
                     ->relationship('event', 'title')

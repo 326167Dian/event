@@ -32,7 +32,16 @@
                     @php
                         $registrationsCount = $event->registrations->count();
                         $slotsLeft = $event->quota - $registrationsCount;
-                    $isFull = $slotsLeft <= 0; @endphp @if (session('success'))
+                    $isFull = $slotsLeft <= 0;
+                        $paymentMode = \App\Models\Setting::paymentMode();
+                        // Satu tampilan QRIS saja untuk peserta: QRIS Dinamis (GDC lewat hub)
+                        // diutamakan (lihat PaymentController::show()); kalau gagal dibuat,
+                        // peserta diarahkan balik ke sini dengan flag ini, dan di bawah jatuh
+                        // ke QRIS statis (kalau admin sudah upload) atau transfer manual.
+                        $autoAvailable = $paymentMode !== 'manual';
+                        $showFallback = ! $autoAvailable || session('qris_dynamic_unavailable');
+                        $staticQrisPath = \App\Models\Setting::qrisStaticImagePath();
+                        $manualInfo = \App\Models\Setting::get('manual_payment_info'); @endphp @if (session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             ✅ {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -127,22 +136,46 @@
                                     </div>
                                 @endif
 
-                                <a href="{{ route('payments.show', $registration->id) }}"
-                                    class="btn btn-success w-100 mb-2">
-                                    📱 Bayar dengan QRIS
-                                </a>
+                                @if (! $showFallback)
+                                    <a href="{{ route('payments.show', $registration->id) }}"
+                                        class="btn btn-success w-100 mb-2">
+                                        📱 Bayar Sekarang (QRIS)
+                                    </a>
+                                @else
+                                    @if ($staticQrisPath)
+                                        <div class="text-center mb-2">
+                                            <img src="{{ asset('storage-public/' . $staticQrisPath) }}" alt="QRIS"
+                                                class="img-fluid mb-2" style="max-width: 280px;">
+                                            <p class="text-muted small mb-0">Scan QRIS di atas, lalu upload bukti pembayaran di bawah.</p>
+                                        </div>
+                                    @elseif ($manualInfo)
+                                        <div class="p-3 mb-2 rounded-3 bg-light border small" style="white-space: pre-line;">{{ $manualInfo }}</div>
+                                    @endif
+                                    @error('foto')
+                                        <div class="alert alert-danger small">{{ $message }}</div>
+                                    @enderror
+                                    <form action="{{ route('events.register', $event->id) }}" method="POST"
+                                        enctype="multipart/form-data" class="mb-2">
+                                        @csrf
+                                        <input type="hidden" name="name" value="{{ $registration->fullname }}">
+                                        <input type="hidden" name="no_tlp" value="{{ ltrim(str_replace('+62', '', (string) $registration->phone), '0') }}">
+                                        <input type="hidden" name="payment_method" value="manual">
+                                        <label for="foto_retry" class="form-label fw-semibold small">Sudah transfer? Upload bukti transfer</label>
+                                        <div class="input-group">
+                                            <input type="file" name="foto" id="foto_retry" class="form-control" accept="image/*" required>
+                                            <button class="btn btn-outline-success">Kirim</button>
+                                        </div>
+                                    </form>
+                                @endif
 
                                 <a href="https://wa.me/{{ $event->whatsapp_admin }}" target="_blank"
                                     class="btn btn-outline-secondary w-100">
-                                    💬 Konfirmasi Manual via WhatsApp
+                                    💬 Tanya Admin via WhatsApp
                                 </a>
                             @endif
                         @else
                             @if (!$isFull)
                                 @if ($event->price > 0)
-                                    <div class="alert alert-info small">
-                                        📎 Silakan upload bukti transfer untuk mendaftar event berbayar ini.
-                                    </div>
                                     @error('name')
                                         <div class="alert alert-danger small">{{ $message }}</div>
                                     @enderror
@@ -153,7 +186,7 @@
                                         <div class="alert alert-danger small">{{ $message }}</div>
                                     @enderror
                                     <form action="{{ route('events.register', $event->id) }}" method="POST"
-                                        enctype="multipart/form-data" class="mt-3">
+                                        enctype="multipart/form-data" class="mt-3" id="registration-form">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
@@ -161,23 +194,41 @@
                                                 value="{{ old('name', auth()->user()->name) }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="no_tlp" class="form-label fw-semibold">No. Telepon</label>
+                                            <label for="no_tlp" class="form-label fw-semibold">No. WhatsApp</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light">+62</span>
-                                                <input type="text" name="no_tlp" id="no_tlp" class="form-control"
-                                                    placeholder="8123..."
+                                                <input type="tel" name="no_tlp" id="no_tlp" class="form-control"
+                                                    placeholder="8123..." inputmode="numeric"
                                                     value="{{ old('no_tlp', auth()->user()->no_tlp ? ltrim(str_replace('+62', '', auth()->user()->no_tlp), '0') : '') }}"
                                                     required>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="foto" class="form-label fw-semibold">Bukti Transfer</label>
-                                            <input type="file" name="foto" id="foto" class="form-control"
-                                                accept="image/*" required>
-                                            <div class="form-text">Format gambar, maksimal 5 MB.</div>
-                                        </div>
-                                        <button class="btn btn-success w-100 btn-lg">
-                                            🎟️ Daftar &amp; Kirim Bukti Transfer
+
+                                        @if ($paymentMode === 'manual')
+                                            <input type="hidden" name="payment_method" value="manual">
+                                            @if ($staticQrisPath)
+                                                <div class="text-center mb-3">
+                                                    <img src="{{ asset('storage-public/' . $staticQrisPath) }}" alt="QRIS"
+                                                        class="img-fluid mb-2" style="max-width: 280px;">
+                                                    <p class="text-muted small mb-0">Scan QRIS di atas, lalu upload bukti pembayaran di bawah.</p>
+                                                </div>
+                                            @elseif ($manualInfo)
+                                                <div class="p-3 mb-3 rounded-3 bg-light border small" style="white-space: pre-line;">{{ $manualInfo }}</div>
+                                            @endif
+                                            <div class="mb-3">
+                                                <label for="foto" class="form-label fw-semibold">Bukti Transfer</label>
+                                                <input type="file" name="foto" id="foto" class="form-control"
+                                                    accept="image/*" required>
+                                                <div class="form-text">Format gambar, maksimal 5 MB.</div>
+                                            </div>
+                                        @endif
+
+                                        <button class="btn btn-success w-100 btn-lg" id="registration-submit">
+                                            @if ($paymentMode === 'manual')
+                                                🎟️ Daftar &amp; Kirim Bukti Transfer
+                                            @else
+                                                🎟️ Daftar &amp; Lanjut Bayar
+                                            @endif
                                         </button>
                                     </form>
                                 @else
@@ -217,6 +268,35 @@
             </div>
         </div>
     </div>
+    @push('pixel')
+        <script>
+            if (typeof window.fbq === 'function') {
+                const eventPixelData = {
+                    value: @json((float) $event->price),
+                    currency: 'IDR',
+                    content_name: @json($event->title),
+                    content_ids: [@json('EVENT-' . $event->id)],
+                    content_type: 'product'
+                };
+                fbq('track', 'ViewContent', eventPixelData);
+
+                @if (session('pixel_lead'))
+                    fbq('track', 'CompleteRegistration', eventPixelData);
+                @endif
+
+                const regForm = document.getElementById('registration-form');
+                if (regForm) {
+                    regForm.addEventListener('submit', function () {
+                        const pm = regForm.querySelector('input[name="payment_method"]:checked, input[type="hidden"][name="payment_method"]');
+                        if (pm && pm.value === 'manual') {
+                            fbq('track', 'AddPaymentInfo', eventPixelData);
+                        }
+                    });
+                }
+            }
+        </script>
+    @endpush
+
     <style>
         .card {
             transition: all 0.3s ease;

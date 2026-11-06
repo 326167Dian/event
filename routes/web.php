@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\HubQrisWebhookController;
 use App\Http\Controllers\StorageFileController;
 
 // Pengganti symlink `php artisan storage:link` (tidak tersedia di hosting ini).
@@ -26,6 +27,9 @@ Route::middleware('auth')->group(function () {
 
 // Webhook Midtrans - dikecualikan dari CSRF di bootstrap/app.php
 Route::post('/midtrans/notification', [PaymentController::class, 'notification'])->name('payments.notification');
+
+// Webhook hub QRIS GDC Pay (mysifacenter.my.id) - dikecualikan dari CSRF di bootstrap/app.php
+Route::post('/webhooks/hub-qris/notification', [HubQrisWebhookController::class, 'notification'])->name('hub-qris.notification');
 
 
 
