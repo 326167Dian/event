@@ -139,4 +139,25 @@ class Setting extends Model
 
         return $id !== '' ? $id : null;
     }
+
+    /**
+     * Nomor WhatsApp admin/CS, dinormalisasi ke format internasional tanpa "+"
+     * (mis. 62812xxxxxxx) supaya siap dipakai di link wa.me. Null kalau kosong.
+     */
+    public static function whatsappNumber(): ?string
+    {
+        $raw = (string) static::get('whatsapp_number', '');
+
+        $digits = preg_replace('/\D/', '', $raw);
+
+        if ($digits === '') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '0')) {
+            $digits = '62' . substr($digits, 1);
+        }
+
+        return $digits;
+    }
 }

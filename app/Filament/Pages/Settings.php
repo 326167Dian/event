@@ -42,6 +42,7 @@ class Settings extends Page
      * Field yang dikelola halaman ini.
      */
     protected const FIELDS = [
+        'whatsapp_number',
         'payment_mode',
         'manual_payment_info',
         'qris_static_image_path',
@@ -61,6 +62,7 @@ class Settings extends Page
         $values = Setting::allValues();
 
         $this->form->fill([
+            'whatsapp_number' => $values['whatsapp_number'] ?? null,
             'payment_mode' => Setting::paymentMode(),
             'manual_payment_info' => $values['manual_payment_info'] ?? null,
             'qris_static_image_path' => $values['qris_static_image_path'] ?? null,
@@ -79,6 +81,17 @@ class Settings extends Page
         return $schema
             ->statePath('data')
             ->components([
+                Section::make('Kontak WhatsApp')
+                    ->description('Tombol WhatsApp melayang akan muncul di semua halaman customer (daftar, bayar, dll) kalau nomor ini diisi, supaya customer yang ragu setelah transfer bisa langsung terhubung ke admin.')
+                    ->icon(Heroicon::OutlinedChatBubbleLeftRight)
+                    ->schema([
+                        TextInput::make('whatsapp_number')
+                            ->label('Nomor WhatsApp Admin/CS')
+                            ->placeholder('Contoh: 08123456789')
+                            ->helperText('Boleh diawali 0 atau +62, otomatis dirapikan. Kosongkan untuk menyembunyikan tombol WhatsApp.')
+                            ->tel(),
+                    ]),
+
                 Section::make('Metode Pembayaran')
                     ->description('Berlaku untuk semua event berbayar.')
                     ->icon(Heroicon::OutlinedCreditCard)
