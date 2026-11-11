@@ -72,8 +72,8 @@ class RegistrationController extends Controller
                 // transfer manual menunggu verifikasi admin.
                 'status' => $isPaidEvent ? 'waiting_approval' : 'approved',
                 'meta_tracking' => [
-                    'fbp' => $request->cookie('_fbp'),
-                    'fbc' => $request->cookie('_fbc'),
+                    'fbp' => $request->cookie('_fbp') ?: $this->metaCookieFromForm($request->input('meta_fbp'), 'fbp'),
+                    'fbc' => $request->cookie('_fbc') ?: $this->metaCookieFromForm($request->input('meta_fbc'), 'fbc'),
                     'ip' => $request->ip(),
                     'user_agent' => substr((string) $request->userAgent(), 0, 500),
                 ],
@@ -91,5 +91,19 @@ class RegistrationController extends Controller
         return redirect()->route('events.show', $event)
             ->with('success', $message)
             ->with('pixel_lead', ! $isPaidEvent);
+    }
+
+    /**
+     * Validasi nilai _fbp/_fbc yang dikirim lewat field tersembunyi form.
+     * Format Meta: fb.<subdomainIndex>.<timestamp>.<nilai>
+     */
+    private function metaCookieFromForm(?string $value, string $type): ?string
+    {
+        $value = trim((string) $value);
+        $pattern = $type === 'fbp'
+            ? '/^fb\.\d\.\d{10,13}\.\d{1,20}$/'
+            : '/^fb\.\d\.\d{10,13}\.[A-Za-z0-9_\-]{1,500}$/';
+
+        return preg_match($pattern, $value) === 1 ? $value : null;
     }
 }

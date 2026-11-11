@@ -294,6 +294,30 @@
                     });
                 }
             }
+
+            // Cadangan Meta CAPI: kirim cookie _fbp/_fbc lewat field tersembunyi,
+            // supaya tetap tersimpan walau cookie tidak sampai ke server.
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                if (!form || form.tagName !== 'FORM') return;
+                if (new URL(form.action).pathname !== new URL(@json(route('events.register', $event->id))).pathname) return;
+                const readCookie = function (name) {
+                    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+                    return m ? decodeURIComponent(m[1]) : '';
+                };
+                [['meta_fbp', '_fbp'], ['meta_fbc', '_fbc']].forEach(function (pair) {
+                    const value = readCookie(pair[1]);
+                    if (!value) return;
+                    let input = form.querySelector('input[name="' + pair[0] + '"]');
+                    if (!input) {
+                        input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = pair[0];
+                        form.appendChild(input);
+                    }
+                    input.value = value;
+                });
+            }, true);
         </script>
     @endpush
 
